@@ -1,0 +1,58 @@
+{% extends "habits/layout.html" %}
+
+{% block body %}
+<h1 style="text-align: center; font-family: 'Georgia', serif; font-weight: 300; font-size: 40px; color: #2c3e50;">
+    Welcome to Healthy Habits!
+</h1>
+
+<h2 style="text-align: center; font-family: 'Georgia', serif; font-weight: 400; font-size: 32px; color: #34495e;">
+    Current Habits
+</h2>
+
+{% if user.is_authenticated %}
+<div style="text-align: center; margin-bottom: 20px;">
+    <a href="{% url 'create' %}" style="text-decoration: none;">
+        <button style="background-color: #27ae60; color: white; border: none; padding: 10px 20px; font-size: 16px; border-radius: 5px; cursor: pointer;">
+            Create Habit
+        </button>
+    </a>
+</div>
+{% else %}
+<div style="text-align: center; margin-bottom: 20px;">
+    <a href="{% url 'login' %}" style="text-decoration: none;">
+        <button style="background-color: #e74c3c; color: white; border: none; padding: 10px 20px; font-size: 16px; border-radius: 5px; cursor: pointer;">
+            Start Now
+        </button>
+    </a>
+</div>
+{% endif %}
+
+<div class="index_habit" style="display: flex; flex-wrap: wrap; justify-content: center; gap: 20px;">
+    {% for habit in habits %}
+    <div class="habit_div">
+        <a href="{% url 'habit' habit.id %}" style="text-decoration: none; color: #2c3e50;">
+            <h3>{{habit.name}}</h3>
+            <p><strong>Description:</strong> {{habit.description}}</p>
+            <p><strong>Started:</strong> {{habit.date_started}}</p>
+            <p><strong>How often:</strong> <span style="text-transform: capitalize;">{{habit.time_often}} times {{habit.how_often}}</span></p>
+        </a>
+    </div>
+    {% empty %}
+    <div style="text-align: center;">
+        <p>You have not created any habits yet.</p>
+        <a href="{% url 'create' %}" style="text-decoration: none;">
+            <button style="background-color: #3498db; color: white; border: none; padding: 10px 20px; font-size: 16px; border-radius: 5px; cursor: pointer;">
+                Create Habit
+            </button>
+        </a>
+    </div>
+    {% endfor %}
+
+    <div class="habit_div create_new">
+        <a href='{% url "create" %}' style="text-decoration: none; text-align: center;">
+            <h3>Create a new Habit</h3>
+            <h1>+</h1>
+        </a>
+    </div>
+</div>
+{% endblock %}

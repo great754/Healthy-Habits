@@ -1,0 +1,262 @@
+{% extends "habits/layout.html" %}
+
+{% block body %}
+<script>
+    document.addEventListener("DOMContentLoaded", () => {
+        document.querySelector('#submit_edit').onclick = () => {
+            habit_id = document.querySelector('#id').innerHTML;
+            sendform(habit_id)
+            document.querySelector('#new_input').style.display = 'none';
+            document.querySelector('.details').style.display = 'block';
+            document.querySelector('.alert-dark').style.display = 'block';
+        }
+
+
+        document.querySelector('#edit').onclick = () => {
+            document.querySelector('#buttons').style.display = 'none';
+            document.querySelector('#new_input').style.display = 'block';
+            document.querySelector('.details').style.display = 'none';
+        }
+        document.querySelector('#cancel_edit').onclick = () => {
+            document.querySelector('#buttons').style.display = 'block';
+            document.querySelector('#new_input').style.display = 'none';
+            document.querySelector('.details').style.display = 'block';
+        }
+        document.querySelector('.btn-danger').onclick = () => {
+            document.querySelector('.pop-up').style.display = 'block';
+        }
+        document.querySelector('#cancel').onclick = () => {
+            document.querySelector('.pop-up').style.display = 'none';
+        }
+        often = document.querySelector('#often').innerHTML
+        if (often.includes("Daily")) {
+            if ((document.querySelector('#hit').innerHTML).includes("Congratulations!")) {
+                document.querySelector('#hit').innerHTML = "Congratulations! You have hit your goal for today!"
+            }
+            else {
+                document.querySelector('#hit').innerHTML = "You have not hit your goal yet!"
+            }
+        }
+        else if (often.includes("Weekly")) {
+            if ((document.querySelector('#hit').innterHTML).includes("Congratulations!")) {
+                document.querySelector('#hit').innterHTML = "Congratulations! You have hit your goal for the week!"
+            }
+            else {
+                document.querySelector('#hit').innerHTML = "You have not hit your goal yet!"
+            }
+        }
+        else if (often.includes("Monthly")) {
+            if ((document.querySelector('#hit').innerHTML).includes("Congratulations!")) {
+                document.querySelector('#hit').innerHTML = "Congratulations! You have hit your goal for the month!"
+            }
+            else {
+                document.querySelector('#hit').innerHTML = "You have not hit your goal yet!"
+            }
+        }
+        else if (often.includes("Yearly")) {
+            if ((document.querySelector('#hit').innerHTML).includes("Congratulations!")) {
+                document.querySelector('#hit').innerHTML = "Congratulations! You have hit your goal for the year!"
+            }
+            else {
+                document.querySelector('#hit').innerHTML = "You have not hit your goal yet!"
+            }
+        }
+    })
+
+    function sendform(habit_id){
+        return fetch(`/edit/${habit_id}`, {
+            method: 'POST',
+            body: JSON.stringify({
+                title: document.querySelector('#custom_title').value,
+                description: document.querySelector('#habit_description').value,
+                how_often: document.querySelector('#how_often').value,
+                time_often: document.querySelector('#time_often').value
+            })
+        })
+        .then(response => {
+            return response.json();
+        })
+        .then(data => {
+            console.log(data);
+        })
+    }
+</script>
+
+<style>
+    .form-container {
+        max-width: 600px;
+        margin: 0 auto;
+        padding: 20px;
+        background-color: #f9f9f9;
+        border-radius: 8px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+    
+    .form-container label {
+        display: block;
+        font-size: 16px;
+        margin-bottom: 8px;
+        color: #333;
+    }
+
+    .form-container input[type="text"],
+    .form-container textarea,
+    .form-container input[type="date"],
+    .form-container select {
+        width: 100%;
+        padding: 12px;
+        border-radius: 5px;
+        border: 1px solid #ddd;
+        font-size: 14px;
+        margin-bottom: 16px;
+        box-sizing: border-box;
+    }
+    
+    .form-container input[type="text"],
+    .form-container textarea {
+        background-color: #fff;
+    }
+    
+    .form-container input[type="date"] {
+        font-family: Arial, sans-serif;
+    }
+
+    .form-container input[type="submit"] {
+        background-color: #007bff;
+        color: #fff;
+        border: none;
+        padding: 12px 20px;
+        border-radius: 5px;
+        cursor: pointer;
+        font-size: 16px;
+        margin-top: 8px;
+    }
+
+    .form-container input[type="submit"]:hover {
+        background-color: #0056b3;
+    }
+
+    .form-container select {
+        background-color: #fff;
+    }
+</style>
+
+<!-- Container for edit input -->
+
+
+<div class="form-container" id="new_input" style="display:none;">
+    <label for="custom_title">What is this habit called?</label>
+    <input type="text" name="title" id="custom_title" value="{{habit.name}}" required>
+
+    <label for="habit_description">What do you want to get out of having this habit?</label>
+    <textarea name="description" id="habit_description" placeholder="Enter Description" rows="4" required>{{habit.description}}</textarea>
+
+    <div id="often">
+        <label for="how_often">How often do you want to track this habit?</label>
+        <select name="time" id="how_often">
+            {% for option in how_often %}
+            <option value="{{ option }}" {% if option == habit.how_often %}selected{% endif %}>
+                {{ option }}
+            </option>
+            {% endfor %}
+        </select>
+
+        <label id="time_label" for="time_often">How many times?</label>
+        <select name="time" id="time_often">
+            {% for option in time_often %}
+            <option value="{{ option }}" {% if option == habit.time_often %}selected{% endif %}>
+                {{ option }}
+            </option>
+            {% endfor %}
+        </select>
+        
+
+        <input type="submit" value="Submit" id="submit_edit">
+        <input type="submit" class="btn btn-secondary" id="cancel_edit" value="Cancel" style="margin-bottom:10px; background-color: gray">
+    </div>
+</div>
+
+
+<div class="alert alert-dark" role="alert" style="display:none;">
+    Reload the page to see new changes!
+  </div>
+
+<div class="details">
+    <h1 id="often"
+        style="text-align:center; font-family:'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif">
+        <strong>{{habit.name}} {{habit.how_often}}</strong></h1>
+    <div style="text-align:center;">{{habit.description}}</div>
+    <div style="text-align:center;">Started on: {{habit.date_started}}</div>
+    <div style="text-align:center;">{{habit.time_started}}</div>
+    <div style="text-align:center;">{{habit.time_often}} times {{habit.how_often}}</div>
+    <div id="hit">
+        {% if hit %}
+        Congratulations! You have hit your goal!
+        {% else %}
+        You have not hit your goal yet!
+        {% endif %}
+    </div>
+</div>
+<div style="text-align:center;">
+    <a href="{% url 'log' %}"><button id="log" class="btn btn-secondary">Log action </button></a>
+</div>
+<div>Count: {{count}}</div>
+
+<div style="display:flex; position:absolute; top:70px; right:10px" id="buttons">
+    <button class="btn btn-secondary" id="edit">Edit Habit</button>
+    <button class="btn btn-danger">Delete Habit</button>
+</div>
+
+<div class="pop-up" style="position: absolute; display:none; 
+height:150px; width:300px;
+border-style: solid;
+border-radius: 30px;
+background-color: white;
+right: 5px; top:60px;">
+    <div style="padding:20px; text-align:center; vertical-align:center;">Are you sure you want to delete this habit?
+    </div>
+    <div style="display:flex; position:relative; top:10px; left:140px;">
+        <form action="{% url 'delete' habit.id %}" method="post">
+            {% csrf_token %}
+            <button class="btn btn-danger">Delete</button>
+        </form>
+        <button id="cancel" class="btn btn-dark">Cancel</button>
+    </div>
+</div>
+
+
+
+<div style="display:flex;">
+    <table class="table table-hover" style="width:700px; margin-left:20px">
+        <thead>
+            <tr>
+                <th scope="col">Date</th>
+                <th scope="col">Time Started</th>
+                <th scope="col">Time Ended</th>
+                <th scope="col">Journal</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for log in logs %}
+            <tr>
+                <th scope="row">{{log.when}}</th>
+                <th scope="row">{{log.started}}</th>
+                <th scope="row">{{log.ended}}</th>
+                <th scope="row">
+                    <a href='{% url "journal" log.id %}'><button class="btn btn-secondary"
+                            style="border-radius:30px">View Journal</button></a>
+                </th>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+
+
+    <div class="graph">
+        <h2>{{ habit.name }} Progress For Past 14 days</h2>
+        <img src="data:image/png;base64,{{ graph }}" alt="Graph of {{ habit.name }}">
+    </div>
+</div>
+<div style="display:none;" id="id">{{habit.id}}</div>
+{% endblock %}

@@ -1,0 +1,11 @@
+.index_habit {
+    display:flex;
+    background-color: blue;
+}
+
+.habit_div{
+    width:600px;
+    height:400px;
+    outline-width: 10px;
+    border-style:dotted
+}

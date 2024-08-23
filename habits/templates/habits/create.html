@@ -1,0 +1,108 @@
+{% extends 'habits/layout.html'%}
+
+{% block body %}
+<script>
+    document.addEventListener("DOMContentLoaded", () => {
+        document.querySelector('#how_often').onchange = () => {
+            value = "How many times"
+            document.querySelector('#time_label').innerHTML = value.concat(" ",document.querySelector('#how_often').value);
+        }
+        document.querySelector("#often").style.display = 'none';
+        document.querySelector('#decoy_submit').onclick = (event) => {
+            event.preventDefault()
+            document.querySelector("#often").style.display = 'block';
+        }
+    })
+</script>
+<style>
+    .form-container {
+        max-width: 600px;
+        margin: 0 auto;
+        padding: 20px;
+        background-color: #f9f9f9;
+        border-radius: 8px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+    
+    .form-container label {
+        display: block;
+        font-size: 16px;
+        margin-bottom: 8px;
+        color: #333;
+    }
+
+    .form-container input[type="text"],
+    .form-container textarea,
+    .form-container input[type="date"],
+    .form-container select {
+        width: 100%;
+        padding: 12px;
+        border-radius: 5px;
+        border: 1px solid #ddd;
+        font-size: 14px;
+        margin-bottom: 16px;
+        box-sizing: border-box;
+    }
+    
+    .form-container input[type="text"],
+    .form-container textarea {
+        background-color: #fff;
+    }
+    
+    .form-container input[type="date"] {
+        font-family: Arial, sans-serif;
+    }
+
+    .form-container input[type="submit"] {
+        background-color: #007bff;
+        color: #fff;
+        border: none;
+        padding: 12px 20px;
+        border-radius: 5px;
+        cursor: pointer;
+        font-size: 16px;
+        margin-top: 8px;
+    }
+
+    .form-container input[type="submit"]:hover {
+        background-color: #0056b3;
+    }
+
+    .form-container select {
+        background-color: #fff;
+    }
+</style>
+
+<form action="{% url 'create' %}" method="post" id="habit_form">
+    {% csrf_token %}
+    <div class="form-container">
+        <label for="custom_title">What is this habit called?</label>
+        <input type="text" name="title" id="custom_title" placeholder="Name of Habit" required>
+    
+        <label for="habit_description">What do you want to get out of having this habit?</label>
+        <textarea name="description" id="habit_description" placeholder="Enter Description" rows="4" required></textarea>
+    
+        <label for="habit_date">When do you want to begin? </label>
+        <input type="date" name="date" id="habit_date" required>
+        <input type="submit" id="decoy_submit">
+    
+        <div id="often">
+            <label for="how_often">How often do you want to track this habit?</label>
+            <select name="often" id="how_often">
+                {% for option in how_often %}
+                <option>{{ option }}</option>
+                {% endfor %}
+            </select>
+    
+            <label id="time_label" for="time_often">How many times?</label>
+            <select name="time" id="time_often">
+                {% for option in time_often %}
+                <option>{{option}}</option>
+                {% endfor %}
+            </select>
+    
+            <input type="submit" value="Submit">
+        </div>
+    </div>
+</form>
+{% endblock %}

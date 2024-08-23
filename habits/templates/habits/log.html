@@ -1,0 +1,88 @@
+{% extends "habits/layout.html"%}
+
+{% block body %}
+<style>
+    .form-container {
+        max-width: 600px;
+        margin: 0 auto;
+        padding: 20px;
+        background-color: #f9f9f9;
+        border-radius: 8px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+    
+    .form-container label {
+        display: block;
+        font-size: 16px;
+        margin-bottom: 8px;
+        color: #333;
+    }
+
+    .form-container input[type="text"],
+    .form-container textarea,
+    .form-container input[type="date"],
+    .form-container select {
+        width: 100%;
+        padding: 12px;
+        border-radius: 5px;
+        border: 1px solid #ddd;
+        font-size: 14px;
+        margin-bottom: 16px;
+        box-sizing: border-box;
+    }
+    
+    .form-container input[type="text"],
+    .form-container textarea {
+        background-color: #fff;
+    }
+    
+    .form-container input[type="date"] {
+        font-family: Arial, sans-serif;
+    }
+
+    .form-container input[type="submit"] {
+        background-color: #007bff;
+        color: #fff;
+        border: none;
+        padding: 12px 20px;
+        border-radius: 5px;
+        cursor: pointer;
+        font-size: 16px;
+        margin-top: 8px;
+    }
+
+    .form-container input[type="time"],
+    .form-container select {
+        width: 200px;
+        padding: 12px;
+        border-radius: 5px;
+        border: 1px solid #ddd;
+        font-size: 14px;
+        margin-bottom: 16px;
+        box-sizing: border-box;
+    }
+
+    .form-container input[type="submit"]:hover {
+        background-color: #0056b3;
+    }
+
+    .form-container select {
+        background-color: #fff;
+    }
+</style>
+<h1>Log Habit</h1>
+<div class="form-container">
+<form action="{% url 'log' %}" method="post">
+    {% csrf_token %}
+    <select name="title">
+        {% for habit in habits %}
+        <option>{{habit.name}}</option>
+        {% endfor %}
+    </select>
+    <input type="date" name="when">
+    <input type="time" name="started">
+    <input type="time" name="ended">
+    <input type="submit">
+</form>
+</div>
+{% endblock %}

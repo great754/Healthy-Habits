@@ -1,0 +1,77 @@
+{% extends "habits/layout.html"%}
+{% block body %}
+<style>
+    .form-container {
+        max-width: 600px;
+        margin: 0 auto;
+        padding: 20px;
+        background-color: #f9f9f9;
+        border-radius: 8px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+    
+    .form-container label {
+        display: block;
+        font-size: 16px;
+        margin-bottom: 8px;
+        color: #333;
+    }
+
+    .form-container input[type="text"],
+    .form-container textarea,
+    .form-container input[type="date"],
+    .form-container select {
+        width: 100%;
+        padding: 12px;
+        border-radius: 5px;
+        border: 1px solid #ddd;
+        font-size: 14px;
+        margin-bottom: 16px;
+        box-sizing: border-box;
+    }
+    
+    .form-container input[type="text"],
+    .form-container textarea {
+        background-color: #fff;
+    }
+    
+    .form-container input[type="date"] {
+        font-family: Arial, sans-serif;
+    }
+
+    .form-container input[type="submit"] {
+        background-color: #007bff;
+        color: #fff;
+        border: none;
+        padding: 12px 20px;
+        border-radius: 5px;
+        cursor: pointer;
+        font-size: 16px;
+        margin-top: 8px;
+    }
+
+    .form-container input[type="submit"]:hover {
+        background-color: #0056b3;
+    }
+
+    .form-container select {
+        background-color: #fff;
+    }
+</style>    
+{% if journal %}
+<div class="form-container">
+    <h1>{{journal.title}}</h1>
+    <p>{{journal.entry}}</p>
+</div>
+{% else %}
+<h1>Enter a journal for this log</h1>
+<div class="form-container">
+<form action="{% url 'journal' log.id %}" method="post"> 
+    {% csrf_token %}   
+    <input type="text" value="{{log.habit.name}} on {{log.when}} at {{log.started}}" name="title">
+    <textarea name="entry" placeholder="How did you feel during this activity?"></textarea>
+    <input type="submit">
+</form>
+</div>
+{% endif %}
+{% endblock %}
